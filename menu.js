@@ -10,8 +10,13 @@ var menu = new Array();
     menu.push({ menu_id : 3, menu_name:"tonkatsu",menu_price : 70, menu_quantity:"10"});
     menu.push({ menu_id : 4, menu_name:"sushi",menu_price : 55, menu_quantity:"10"});
  
-
     console.table(menu);
+var promo = new Array();
+    promo.push({pro_id:1,menu_name:"odeng",quantity:"2",promo_price:95});
+    promo.push({pro_id:1,menu_name:"ramen",quantity:"2",promo_price:110});
+
+    console.table(promo);
+
 
 searchType = (key) => {
     let check_search = reg_search.test(key);
@@ -58,6 +63,7 @@ addmenu = (name, price, quantity) => {
                 console.log("already have menu try again");
                 similar_number = true;
             } 
+            
         })
         if (similar_number == false) {
             id++;
@@ -72,10 +78,41 @@ addmenu = (name, price, quantity) => {
     }
         
 }    
+addpromo=(name,price,quantity)=>{
+    if((reg_name.test(menu_name) && reg_price.test(promo_price) && reg_quantity.test(quantity) == true ))
+    {
+        let similar_number = false;
+        promo.forEach((promo) => {
+            if(menu.name == name) {
+                console.log("already have menu try again");
+                similar_number = true;
+            }
+            if(menu.price < price){
+                console.log("Price higher than menu")
+                similar_number = true;
+            } 
+        })
+        if (similar_number == false) {
+            id++;
+            promo.push({ pro_id:id,menu_name:name, promo_price: price, quantity: quantity});
+            checkType();
+            return promo;
+        } else if (similar_number == true) {
+            throw "already have menu try again";
+        }
+    } else {
+        throw "Wrong information try agin";
+    }
+    
 
+    
+}
 
 showMenu = () => {
     console.table(menu)
+}
+showPromo=()=>{
+    console.table(promo)
 }
 
 module.exports={
@@ -83,5 +120,8 @@ module.exports={
     addmenu: addmenu,
     showMenu: showMenu,
     deletemenu: deletemenu,
-    menu:menu
+    menu:menu,
+    showPromo:showPromo,
+    addpromo:addpromo,
+    promo:promo
 }

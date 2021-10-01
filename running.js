@@ -2,9 +2,10 @@ var http = require('http');
 var url = require('url');
 
 
-const {deletemenu,addmenu,showMenu,menu} = require('./menu.js');
-const {addCustomer,deleteCustomer,showCustomer,customer} = require('./customer.js');
-const {showOrder,showAllorder,order} = require('./order.js');
+const { deletemenu, addmenu, showMenu, menu, showPromo, addpromo, promo } = require('./menu.js');
+const { addCustomer, deleteCustomer, showCustomer, customer } = require('./customer.js');
+const { showOrder, showAllorder, order } = require('./order.js');
+
 
 http.createServer(function (req, res) {
 
@@ -13,14 +14,26 @@ http.createServer(function (req, res) {
     var status = 200;
     var data = '';
 
-    switch(require_path.pathname) {
+    switch (require_path.pathname) {
         case '/addmenu':
             try {
-                let all_menu = addmenu(require_path.query.name, parseInt(require_path.query.price),parent(require_path.query.quantity));
+                let all_menu = addmenu(require_path.query.name, parseInt(require_path.query.price), parent(require_path.query.quantity));
                 message += `This menu ${require_path.query.name} has been added.`
                 data = JSON.stringify(all_menu)
                 showMenu();
-            }catch(err) {
+            } catch (err) {
+                status = 400;
+                message += (err)
+                console.log(err);
+            }
+            break;
+        case '/addpromo':
+            try {
+                let all_menu = addpromo(require_path.query.name, parseInt(require_path.query.price), parent(require_path.query.quantity));
+                message += `This promo ${require_path.query.name} has been added.`
+                data = JSON.stringify(all_menu)
+                showPromo();
+            } catch (err) {
                 status = 400;
                 message += (err)
                 console.log(err);
@@ -32,7 +45,7 @@ http.createServer(function (req, res) {
                 message += `This menu ${require_path.query.name} has been deleted.`
                 data = JSON.stringify(all_menu)
                 showMenu();
-            }catch(err) {
+            } catch (err) {
                 status = 400;
                 message += (err)
                 console.log(err);
@@ -41,11 +54,11 @@ http.createServer(function (req, res) {
         case '/addCustomer':
             try {
                 let show = addCustomer(require_path.query.firstname, require_path.query.lastname, parseInt(require_path.query.age),
-                    require_path.query.phone_number, require_path.query.email,require_path.query.location)
+                    require_path.query.phone_number, require_path.query.email, require_path.query.location)
                 message += `Customer name ${require_path.query.firstname} ${require_path.query.lastname} has been added.`
                 data += JSON.stringify(show);
-                
-            }catch (err) {
+
+            } catch (err) {
                 status = 400;
                 message += (err)
                 console.log(err)
@@ -60,7 +73,7 @@ http.createServer(function (req, res) {
                 status = 400;
                 message += (err)
                 console.log(err)
-            }    
+            }
             break;
         case '/searchType':
             try {
@@ -73,7 +86,7 @@ http.createServer(function (req, res) {
                 console.log(err)
             }
             break;
-        
+
         case '/showOrder':
             try {
                 let show = showOrder(parseInt(require_path.query.id));
@@ -97,20 +110,20 @@ http.createServer(function (req, res) {
             }
             break;
 
-            default: 
-                status = 404
-                message = 'path not found!'
+        default:
+            status = 404
+            message = 'path not found!'
             break;
     }
-   
+
     let response_objects = {
         status: status,
         message: message,
         data: data
     }
 
-    res.writeHead(status, {'Content-Type': 'application/json'});
-	res.end(JSON.stringify(response_objects));
+    res.writeHead(status, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(response_objects));
 
 
 }).listen(8080);
